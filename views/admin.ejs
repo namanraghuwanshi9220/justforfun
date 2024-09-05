@@ -15,28 +15,36 @@
         <% imagesByDevice.forEach(device => { %>
             <div class="mb-8">
                 <h2 class="text-2xl font-bold mb-4">Device ID: <%= device.deviceId %></h2>
-                
-                <div class="grid grid-cols-4 gap-4">
+
+                <!-- Responsive grid for images -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     <% device.images.forEach(image => { %>
                         <div class="bg-white shadow-md rounded-lg p-4">
+                            <!-- Image -->
                             <img src="<%= image.path  %>" alt="Image" class="w-full h-32 object-cover mb-4 rounded-lg">
-                          <div class="flex  space-x-2"> 
-                             <button 
-                                class="bg-red-500 text-white px-4 py-2 rounded"
-                                onclick="deleteImage('<%= image.deviceId %>', '<%= image.filename %>')">
-                                Delete
-                            </button>
 
-                            <a  href="<%= image.path %>" download="<%= image.filename %>" class="bg-blue-500 text-white px-4 py-2 rounded  mr-0 inline-block text-center">
-                                Download
-                            </a>
-                        </div>
+                            <!-- Buttons -->
+                            <div class="flex justify-between space-x-2">
+                                <!-- Delete Button -->
+                                <button 
+                                    class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-full"
+                                    onclick="deleteImage('<%= image.deviceId %>', '<%= image.filename %>')">
+                                    Delete
+                                </button>
+
+                                <!-- Download Button -->
+                                <a href="<%= image.path %>" download="<%= image.filename %>" 
+                                    class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full text-center">
+                                    Download
+                                </a>
+                            </div>
                         </div>
                     <% }) %>
                 </div>
             </div>
         <% }) %>
     </div>
+
 
     <script>
         // Function to delete an image
