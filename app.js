@@ -46,6 +46,26 @@ app.delete('/delete-image/:deviceId/:image', (req, res) => {
     });
 });
 
+// DELETE route to delete a device folder
+app.delete('/delete-device/:deviceId', (req, res) => {
+    const deviceId = req.params.deviceId;
+    const folderPath = path.join(__dirname, 'uploads', deviceId); // Assuming 'uploads' is your base folder for devices
+
+    // Check if the folder exists
+    if (fs.existsSync(folderPath)) {
+        // Recursively delete the folder and its contents
+        fs.rm(folderPath, { recursive: true, force: true }, (err) => {
+            if (err) {
+                console.error('Error deleting folder:', err);
+                return res.status(500).send('Could not delete the device folder.');
+            }
+
+            res.send('Device folder deleted successfully.');
+        });
+    } else {
+        res.status(404).send('Device folder not found.');
+    }
+});
 
 // Route to handle the image upload
 app.post('/upload-image', (req, res) => {
