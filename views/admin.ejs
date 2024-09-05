@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page - Images by Device</title>
+    <link href="/styles.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Images by Device ID</h1>
+
+        <!-- Loop through images by device -->
+        <% imagesByDevice.forEach(device => { %>
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4">Device ID: <%= device.deviceId %></h2>
+                
+                <div class="grid grid-cols-4 gap-4">
+                    <% device.images.forEach(image => { %>
+                        <div class="bg-white shadow-md rounded-lg p-4">
+                            <img src="<%= image.path  %>" alt="Image" class="w-full h-32 object-cover mb-4 rounded-lg">
+                          <div class="flex  space-x-2"> 
+                             <button 
+                                class="bg-red-500 text-white px-4 py-2 rounded"
+                                onclick="deleteImage('<%= image.deviceId %>', '<%= image.filename %>')">
+                                Delete
+                            </button>
+
+                            <a  href="<%= image.path %>" download="<%= image.filename %>" class="bg-blue-500 text-white px-4 py-2 rounded  mr-0 inline-block text-center">
+                                Download
+                            </a>
+                        </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+
+    <script>
+        // Function to delete an image
+        function deleteImage(deviceId, image) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                fetch(`/delete-image/${deviceId}/${image}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error('Error deleting image:', err);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
